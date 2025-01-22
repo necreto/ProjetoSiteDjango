@@ -73,7 +73,8 @@ THIRD_APPS = [ # são as Lib/app que instalamos no projeto
 
 PROJECT_APPS = [ # são os apps que criamos no projeto 
     'apps.base',		# update 11/03/2024
-    'apps.pages'
+    'apps.pages',
+    'apps.contas',
         # 'apps.myapp',   # Removido esses apps que nao criamos ainda.
 ]
 
@@ -114,6 +115,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+
+AUTH_USER_MODEL = "contas.MyUser" 
 
 # Banco de Dados.
 DATABASES = {
