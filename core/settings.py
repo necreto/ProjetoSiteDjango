@@ -10,7 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+# importar a biblioteca
 import os
+import sys
+from dotenv import load_dotenv 
+
+# Adicionar essa tag para que nosso projeto encontre o .env
+load_dotenv(os.path.join(BASE_DIR, ".env")) 
+
+# Diz para Projeto Django aonde estão nossos aplicativos
+APPS_DIR = str(os.path.join(BASE_DIR,'apps')) # Dentro da pasta apps na raiz do projeto
+sys.path.insert(0, APPS_DIR)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,17 +34,16 @@ STATIC_DIR=os.path.join(BASE_DIR,'static')
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ud3a#s+suxo=t@)ahax#r%oxu0sv)eh=ky!m+f8wub0pxt!0js'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = []
 
 
-# Application definition
-
-INSTALLED_APPS = [
+# Application definition 
+DJANGO_APPS = [ # Aplicativos padrão do projeto django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,44 +51,30 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+THIRD_APPS = [ # são as Lib/app que instalamos no projeto
+    #... # update 11/03/2024 - removido esses ...
 ]
 
-ROOT_URLCONF = 'core.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
+PROJECT_APPS = [ # são os apps que criamos no projeto 
+        # 'apps.base',		# update 11/03/2024
+        # 'apps.myapp',   # Removido esses apps que nao criamos ainda.
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
+# INSTALLED_APPS é a variavel que django entende para fazer a leitura \
+# dos aplicativos então verifica a nomencratura.
+INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + PROJECT_APPS
 
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases 
+# Banco de Dados.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'), 
+        'NAME': os.path.join(BASE_DIR, os.getenv('NAME_DB')),
+            #'USER':os.getenv('USER_DB')
+            #'PASSWORD': os.getenv('PASSWORD_DB')
+            #'HOST':os.getenv('HOST_DB')
+            #'PORT':os.getenv('PORT_DB') 
     }
 }
 
@@ -133,3 +128,12 @@ MEDIA_URL = '/media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Configuração de E-mail
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD') 
+EMAIL_PORT = os.getenv('EMAIL_PORT') 
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') 
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
