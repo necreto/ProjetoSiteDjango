@@ -14,6 +14,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 import sys
 from dotenv import load_dotenv 
+from corsheaders.defaults import default_headers
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
+STATIC_DIR=os.path.join(BASE_DIR,'static') 
 
 # Adicionar essa tag para que nosso projeto encontre o .env
 load_dotenv(os.path.join(BASE_DIR, ".env")) 
@@ -21,14 +27,6 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 # Diz para Projeto Django aonde estão nossos aplicativos
 APPS_DIR = str(os.path.join(BASE_DIR,'apps')) # Dentro da pasta apps na raiz do projeto
 sys.path.insert(0, APPS_DIR)
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
-
-STATIC_DIR=os.path.join(BASE_DIR,'static') 
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -39,9 +37,30 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ 
+		'localhost', 
+		'127.0.0.1',  
+]
 
+# CORS Config
+CORS_ALLOW_HEADERS = list(default_headers) + [
+	'X-Register',
+] 
 
+CORS_ORIGIN_ALLOW_ALL = True  
+# CORS_ORIGIN_ALLOW_ALL como True, o que permite que qualquer site acesse seus recursos.
+# Defina como False e adicione o site no CORS_ORIGIN_WHITELIST onde somente o site da lista acesse os seus recursos.
+
+CORS_ALLOW_CREDENTIALS = False 
+
+CORS_ORIGIN_WHITELIST = ['http://meusite.com',] # Lista. 
+
+if not DEBUG:
+	SECURE_SSL_REDIRECT = True
+	ADMINS = [(os.getenv('SUPER_USER'), os.getenv('EMAIL'))]
+	SESSION_COOKIE_SECURE = True
+	CSRF_COOKIE_SECURE = True 
+ 
 # Application definition 
 DJANGO_APPS = [ # Aplicativos padrão do projeto django
     'django.contrib.admin',
@@ -52,8 +71,9 @@ DJANGO_APPS = [ # Aplicativos padrão do projeto django
     'django.contrib.staticfiles',
 ]
     
-THIRD_APPS = [ # são as Lib/app que instalamos no projeto
-    #... # update 11/03/2024 - removido esses ...
+# Adicionar no settings.py
+THIRD_APPS = [ # update 03/11/2024 altera para THIRD_APPS
+	"corsheaders", 
 ]
 
 PROJECT_APPS = [ # são os apps que criamos no projeto 
@@ -65,6 +85,39 @@ PROJECT_APPS = [ # são os apps que criamos no projeto
 # dos aplicativos então verifica a nomencratura.
 INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + PROJECT_APPS
 
+
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', # CORS
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'requestlogs.middleware.RequestLogsMiddleware', # LOGS
+
+]
+
+ROOT_URLCONF = 'core.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+    
+WSGI_APPLICATION = 'core.wsgi.application'
 
 # Banco de Dados.
 DATABASES = {
@@ -97,7 +150,43 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK={ 
+    'EXCEPTION_HANDLER': 'requestlogs.views.exception_handler',
+}
 
+# Configuração padrão de Logs 
+LOGGING = { # update 03/11/2024 
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'requestlogs_to_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': 'info.log',
+            'when': 'midnight',  # Rotaciona a cada meia-noite
+            'backupCount': 7,  # Mantém logs dos últimos 7 dias
+            'formatter': 'verbose',  # Configuração de formatação
+        },
+    },
+    'loggers': {
+        'requestlogs': {
+            'handlers': ['requestlogs_to_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
+        },
+    },
+}
+
+REQUESTLOGS = {
+    'SECRETS': ['password', 'token'],
+    'METHODS': ('PUT', 'PATCH', 'POST', 'DELETE'),
+}
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/ 
 # Se quiser deixar em PT BR
