@@ -21,9 +21,9 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls), 
-    #path('base/', base_view, name='base'),
-    
+    path('contas/', include('contas.urls')), # url das contas
     path('', include('pages.urls')), # url do app 
+    
 ]
 
 if settings.DEBUG:
