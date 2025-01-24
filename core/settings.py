@@ -59,6 +59,7 @@ if not DEBUG:
  
 # Application definition 
 DJANGO_APPS = [ # Aplicativos padrão do projeto django
+    'apps.contas',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -74,7 +75,6 @@ THIRD_APPS = [ # são as Lib/app que instalamos no projeto
 PROJECT_APPS = [ # são os apps que criamos no projeto 
     'apps.base',		# update 11/03/2024
     'apps.pages',
-    'apps.contas',
         # 'apps.myapp',   # Removido esses apps que nao criamos ainda.
 ]
 
@@ -195,6 +195,8 @@ SESSION_TIMEOUT_REDIRECT = 'http://localhost:8000/contas/desconectado-inatividad
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/ 
