@@ -7,4 +7,6 @@ urlpatterns = [
     path('criar-conta/', views.register_view, name='register'), 
     path('logout/', views.logout_view, name='logout'),
     path("", include("django.contrib.auth.urls")),  # Django auth
+    path('atualizar-usuario/', views.atualizar_meu_usuario, name='atualizar_meu_usuario'),
+    path('atualizar-usuario/<int:user_id>/', views.atualizar_usuario, name='atualizar_usuario'),
 ]
