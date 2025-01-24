@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver 
 
 class Perfil(models.Model):   
     usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='perfil') 
@@ -17,3 +19,9 @@ class Perfil(models.Model):
     class Meta:
         verbose_name = "Perfil"
         verbose_name_plural = "Perfil"
+        
+    
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_perfil(sender, **kwargs):
+    if kwargs.get('created', False):
+        Perfil.objects.create(usuario=kwargs['instance'])

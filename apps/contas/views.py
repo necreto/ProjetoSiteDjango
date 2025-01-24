@@ -6,6 +6,7 @@ from contas.forms import CustomUserCreationForm, UserChangeForm
 from django.contrib.auth.decorators import login_required
 from contas.models import MyUser
 from contas.permissions import grupo_colaborador_required
+from perfil.models import Perfil
 
 # Create your views here.
 def timeout_view(request):
@@ -34,10 +35,12 @@ def login_view(request):
 def register_view(request):
     if request.method == "POST": # metodo POST
         form = CustomUserCreationForm(request.POST) # Formulário que criamos no forms.py
-        if form.is_valid(): # se formulário for valido registra usuário
+        if form.is_valid():
             usuario = form.save(commit=False)
             usuario.is_valid = False
             usuario.save()
+            
+            #Perfil.objects.create(usuario=usuario) # Cria instancia perfil do usuário
 
             group = Group.objects.get(name='Usuario')
             usuario.groups.add(group)
