@@ -8,5 +8,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path("", include("django.contrib.auth.urls")),  # Django auth
     path('atualizar-usuario/', views.atualizar_meu_usuario, name='atualizar_meu_usuario'),
-    path('atualizar-usuario/<int:user_id>/', views.atualizar_usuario, name='atualizar_usuario'),
+    path('atualizar-usuario/<slug:username>/',  views.atualizar_usuario, name='atualizar_usuario'),
 ]
