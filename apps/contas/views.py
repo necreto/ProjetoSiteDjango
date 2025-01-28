@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from contas.models import MyUser
 from contas.permissions import grupo_colaborador_required
 from perfil.models import Perfil
+from perfil.forms import PerfilForm
 
 # Create your views here.
 def timeout_view(request):
@@ -86,3 +87,28 @@ def atualizar_usuario(request, username):
 def lista_usuarios(request): # Lista Cliente 
 	lista_usuarios = MyUser.objects.select_related('perfil').filter(is_superuser=False) 
 	return render(request, 'lista-usuarios.html', {'lista_usuarios': lista_usuarios})
+
+@login_required
+@grupo_colaborador_required(['Administradores','Colaborador'])
+def adicionar_usuario(request):
+    user_form = CustomUserCreationForm()
+    perfil_form = PerfilForm()
+
+    if request.method == 'POST':
+        user_form = CustomUserCreationForm(request.POST)
+        perfil_form = PerfilForm(request.POST, request.FILES)
+
+        if user_form.is_valid() and perfil_form.is_valid():
+            # Salve o usuário
+            usuario = user_form.save()
+
+            # Crie um novo perfil para o usuário
+            perfil = perfil_form.save(commit=False)
+            perfil.usuario = usuario
+            perfil.save()
+    
+            messages.success(request, 'Usuário adicionado com sucesso.')
+            return redirect('lista_usuarios')
+
+    context = {'user_form': user_form, 'perfil_form': perfil_form}
+    return render(request, "adicionar-usuario.html", context)
