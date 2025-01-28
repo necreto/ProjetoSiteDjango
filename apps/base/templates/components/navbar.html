@@ -21,22 +21,22 @@
                 </li>
             </ul>
             <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Pesquisar" aria-label="Search">
-                <button class="btn btn-success" type="submit">Pesquisar</button>
-            </form>
-            {% if user.is_authenticated %}
+				<input class="form-control me-2" type="search" placeholder="Pesquisar" aria-label="Search">
+				<button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
+			</form>
+			{% if user.is_authenticated %}
             <button class="btn btn-warning mx-2" type="submit"  onclick="location.href='{% url 'painel' %}'">
                 <i class="fas fa-cog"></i></button>
-            <span class="p-2"> <!-- Adiciona -->
-                        <a class="nav-link" href="{% url 'perfil' user.username %}">
-                            <i class="fas fa-user mx-2"></i>{{user.first_name}} {{user.last_name}}
-                        </a>
-                    </span>
-            <button class="btn btn-danger" data-bs-toggle="modal" href="#logoutModal">Logout</button>
-            {% else %}
-            <button class="btn btn-primary mx-2" onclick="location.href='{% url 'login' %}'">Entrar</button>
-            <button class="btn btn-warning" onclick="location.href='{% url 'register' %}'">Cadastrar-se</button>
-            {% endif %}
+			<span class="p-2">
+                <a class="nav-link" href="{% url 'perfil' user.username %}">
+                    <i class="fas fa-user mx-2"></i>{{user.first_name}} {{user.last_name}}
+                </a>
+            </span>
+			<button class="btn btn-danger" data-bs-toggle="modal" href="#logoutModal">Logout</button>
+			{% else %}
+			<button class="btn btn-primary mx-2" onclick="location.href='{% url 'login' %}'">Entrar</button>
+			<button class="btn btn-warning" onclick="location.href='{% url 'register' %}'">Cadastrar-se</button>
+			{% endif %}
         </div>
     </div>
 </nav>

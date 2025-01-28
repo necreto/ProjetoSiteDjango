@@ -1,20 +1,15 @@
 {% extends 'base_dashboard.html' %}
 {% block title %}Configurações{% endblock %}
 {% block content_dash %}
-
 <div class="d-flex flex-wrap gap-3">
     <div class="p-5 bg-light" style="width: 430px;">
         <h4>Contas</h4>
         <p>Configurações do aplicativo contas</p>
         <ul>
-            <li><a href="{% url 'password_change' %}">Alterar Minha Senha</a></li>
-            {% if perms.contas.view_myuser %}
-            <li><a href="{% url 'adicionar_usuario' %}">Adicionar Novo Usuário</a></li>
-            <li><a href="{% url 'lista_usuarios' %}">Lista Todos Usuários</a></li>
-            {% endif %} 
+            <li><a href="{% url 'password_change' %}">Alterar minha senha</a></li>
+            <li><a href="{% url 'lista_usuarios' %}">Lista Todos usuários</a></li>
         </ul>
     </div>
-
     <div class="p-5 bg-light" style="width: 430px;">
         <h4>Sistema</h4>
         <p>Configurações de logo,Banner,informações empresa.</p>

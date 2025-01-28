@@ -9,7 +9,7 @@ class PerfilForm(forms.ModelForm):
     class Meta:
         model = Perfil
         fields = ['foto', 'ocupacao', 'genero', 'telefone',
-                    'cidade','estado', 'descricao']
+                  'cidade','estado', 'descricao']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

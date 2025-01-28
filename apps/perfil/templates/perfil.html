@@ -7,8 +7,8 @@
             {% if obj.perfil.foto %}
             <img src="{{obj.perfil.foto.url}}" class="img-thumbnail border rounded" width="280" alt="">  
             {% else %}
-            <img src="{% static 'images/perfil/foto-padrao.jpg' %}" class="img-thumbnail border rounded" width="280" alt="">  
-            {% endif %}
+            <img src="{% static 'images/perfil/foto-padrao.jpg' %}" class="img-thumbnail border rounded" width="280" alt="">
+            {% endif %}  
             <button class="btn btn-warning" onclick="location.href='#'">
                 <i class="fas fa-cog"></i> Editar Perfil
             </button>
