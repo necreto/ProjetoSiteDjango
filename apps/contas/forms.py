@@ -41,7 +41,7 @@ class CustomUserCreationForm(forms.ModelForm):
         # Save the provided password in hashed format
         user = super().save(commit=False)
         if self.user.is_authenticated:
-            user.set_password('123') # Senha padrão 123 para todos usuarios adicionados
+            user.set_password('mudar.123') # Senha padrão 123 para todos usuarios adicionados
             user.force_change_password = True # força mudança de senha quando logar.
         else:
             user.set_password(self.cleaned_data["password1"])

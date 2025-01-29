@@ -1,7 +1,8 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required 
 from django.contrib.auth.models import Group 
+from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect, get_object_or_404
 from contas.models import MyUser
 from contas.forms import CustomUserCreationForm, UserChangeForm
@@ -19,6 +20,23 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
+# Mudança de Senha Force (first_login)
+@login_required
+def force_password_change_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.force_change_password = False # passa o parametro para False.
+            user.save()
+            update_session_auth_hash(request, user)
+            return redirect('password_change_done')
+    else:
+        form = PasswordChangeForm(request.user)
+    context = {'form': form}
+    return render(request, 'registration/password_force_change_form.html', context)
 
 # Autenticar um usuario
 def login_view(request):
@@ -26,22 +44,23 @@ def login_view(request):
         email = request.POST.get('email') # Valor do campo email
         password = request.POST.get('password') # Valor do campo password 
         user = authenticate(request, email=email, password=password) # Retorna a autenticação
+        
         if user is not None:
             login(request, user)
             
             if user.is_authenticated and user.requires_password_change(): # Verifica
                 msg = 'Olá '+user.first_name+', como você pode perceber atualmente \
-                        a sua senha é 123 cadastrado. Recomendamos fortemente \
+                        a sua senha é mudar.123 cadastrado. Recomendamos fortemente \
                         que você altere sua senha para garantir a segurança da sua conta. \
                         É importante escolher uma senha forte e única que não seja fácil de adivinhar. \
                         Obrigado pela sua atenção!' 
                 messages.warning(request, msg)
                 return redirect('force_password_change') # Vai para rota de alterar senha.
             else:
-                return redirect('home')
-            
+                return redirect('home')  
         else:
             messages.error(request, 'Email ou senha inválidos') # senão, retorna mensagem de erro
+    
     if request.user.is_authenticated: # se usuario acessar a rota /login, já estiver autenticado retorna para home
         return redirect('home')
     return render(request, 'login.html')
@@ -136,3 +155,4 @@ def adicionar_usuario(request):
 
     context = {'user_form': user_form, 'perfil_form': perfil_form}
     return render(request, "adicionar-usuario.html", context)
+
