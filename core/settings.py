@@ -77,6 +77,7 @@ PROJECT_APPS = [ # são os apps que criamos no projeto
     'apps.config',
     'apps.perfil',
     'apps.pages',
+    'apps.forum',
 ]
 
 # INSTALLED_APPS é a variavel que django entende para fazer a leitura \
