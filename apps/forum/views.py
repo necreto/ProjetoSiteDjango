@@ -52,6 +52,10 @@ def editar_postagem_forum(request, id):
 @login_required 
 def editar_postagem_forum(request, id):
     postagem = get_object_or_404(models.PostagemForum, id=id)
+    if request.user != postagem.usuario and not (
+        ['administrador', 'colaborador'] in request.user.groups.all() or request.user.is_superuser):
+            return redirect('lista-postagem-forum')  # Redireciona para uma página de erro ou outra página adequada
+        
     if request.method == 'POST':
         form = PostagemForumForm(request.POST, instance=postagem)
         if form.is_valid():
@@ -61,3 +65,4 @@ def editar_postagem_forum(request, id):
     else:
         form = PostagemForumForm(instance=postagem)
     return render(request, 'form-postagem-forum.html', {'form': form})
+
