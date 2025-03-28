@@ -10,8 +10,8 @@ from pathlib import Path
 import os
 import sys
 from dotenv import load_dotenv 
-from corsheaders.defaults import default_headers
 from django.contrib.messages import constants
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
