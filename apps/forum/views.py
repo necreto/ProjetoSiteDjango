@@ -6,11 +6,23 @@ from base.utils import add_form_errors_to_messages
 from forum.forms import PostagemForumForm
 from forum import models
 
-# Lista de Postagem
+# Lista de Postagens no Dashboard (Gerenciar)
 def lista_postagem_forum(request):
-	postagens = models.PostagemForum.objects.filter(ativo=True)
-	context = {'postagens': postagens}
-	return render(request, 'lista-postagem-forum.html', context)
+    if request.path == '/forum/': # Pagina forum da home, mostrar tudo ativo.
+        postagens = models.PostagemForum.objects.filter(ativo=True)
+        template_view = 'lista-postagem-forum.html' # lista de post da rota /forum/
+    else: # Essa parte mostra no Dashboard
+        user = request.user 
+        lista_grupos = ['administrador', 'colaborador']
+        template_view = 'dashboard/dash-lista-postagem-forum.html' # template novo que vamos criar 
+        if any(grupo.name in lista_grupos for grupo in user.groups.all()) or user.is_superuser:
+            # Usuário é administrador ou colaborador, pode ver todas as postagens
+            postagens = models.PostagemForum.objects.filter(ativo=True)
+        else:
+            # Usuário é do grupo usuário, pode ver apenas suas próprias postagens
+            postagens = models.PostagemForum.objects.filter(usuario=user)
+    context = {'postagens': postagens}
+    return render(request, template_view, context)
 
 # Cria postagens 
 @login_required
@@ -53,8 +65,10 @@ def editar_postagem_forum(request, id):
 @login_required 
 def editar_postagem_forum(request, id):
     postagem = get_object_or_404(models.PostagemForum, id=id)
+    lista_grupos = ['administrador', 'colaborador']
+    
     if request.user != postagem.usuario and not (
-        ['administrador', 'colaborador'] in request.user.groups.all() or request.user.is_superuser):
+        any(grupo.name in lista_grupos for grupo in request.user.groups.all())  or request.user.is_superuser):
             return redirect('lista-postagem-forum')  # Redireciona para uma página de erro ou outra página adequada
         
     if request.method == 'POST':
