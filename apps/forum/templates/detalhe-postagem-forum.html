@@ -10,7 +10,7 @@
                     <div class="div"> 
                         {% if postagem.usuario == request.user %}
                         <a class="btn btn-warning" href="{% url 'editar-postagem-forum' postagem.id %}"><i class="fas fa-edit"></i></a>  
-                        <a class="btn btn-danger" href="#"><i class="fas fa-trash"></i></a>  
+                        <a class="btn btn-danger" data-bs-toggle="modal" href="#confirmarExclusaoModal{{postagem.id}}" role="button"><i class="fas fa-trash"></i></a>
                         {% endif %}
                     </div> 
                 </div> 
@@ -26,4 +26,5 @@
         </div>
     </div>
 </div>
+{% include "modal-deletar-postagem-forum.html" %}
 {% endblock %}
