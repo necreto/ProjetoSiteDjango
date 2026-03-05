@@ -12,6 +12,7 @@
             <div class="modal-footer">
             <form method="post" action="{% url 'deletar-postagem-forum' postagem.id %}">
                 {% csrf_token %}
+                <input type="hidden" name="redirect_route" value="{{ request.path }}">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="submit" class="btn btn-danger">Excluir</button>
             </form>

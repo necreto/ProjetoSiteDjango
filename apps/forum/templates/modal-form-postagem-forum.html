@@ -10,7 +10,8 @@
                 <form method="post" action="{% url 'editar-postagem-forum' postagem.id %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary mx-2">Criar</button>
+                    <input type="hidden" name="redirect_route" value="{{ request.path }}">
+                    <button type="submit" class="btn btn-primary mx-2">Salvar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </form>
             </div>

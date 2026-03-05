@@ -12,6 +12,7 @@ build/
 develop-eggs/
 dist/
 downloads/
+media/
 eggs/
 .eggs/
 lib/
@@ -26,6 +27,7 @@ share/python-wheels/
 *.egg
 *.backup
 MANIFEST
+db.sqlite3*
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
