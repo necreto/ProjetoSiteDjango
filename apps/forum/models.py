@@ -22,3 +22,11 @@ class PostagemForum(models.Model):
         verbose_name = 'Postagem Forum'
         verbose_name_plural = 'Postagem Forum'
         ordering = ['-data_criacao']
+
+class PostagemForumImagem(models.Model):
+    imagem = models.FileField('Imagem Anexo', upload_to='postagem-forum/')
+    postagem = models.ForeignKey(PostagemForum, related_name='postagem_imagens', on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.postagem.titulo
+    
